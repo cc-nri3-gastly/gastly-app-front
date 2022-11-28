@@ -66,9 +66,11 @@ const Participants = (props) => {
   };
 
   const handleSubmit = () => {
-    // props.setParticipants(checked)
+    props.setParticipants(checked);
+    props.setPersonNum(checked.length);
     props.onClose(false);
   };
+
   return (
     <Dialog
       open={props.open}

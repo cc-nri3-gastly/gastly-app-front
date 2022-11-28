@@ -4,13 +4,12 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import Stack from "@mui/material/Stack";
 import SearchIcon from "@mui/icons-material/Search";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import "./search.css";
+import Participants from "./Participants";
 
 export default function SearchCondition(props) {
   const url = "/shops";
@@ -27,9 +26,10 @@ export default function SearchCondition(props) {
   });
   const [area, setArea] = useState("");
   const [purpose, setPurpose] = useState("");
-  const [participantsId, setParticipantsId] = useState([]);
+  const [participants, setParticipants] = useState([]);
   const [memberType, setMemberType] = useState(1);
   const [personNum, setPersonNum] = useState("");
+  const [showDialog, setShowDialog] = useState(false);
 
   const onChangeSetArea = (event) => {
     setArea(event.target.value);
@@ -44,6 +44,7 @@ export default function SearchCondition(props) {
   };
 
   const onChangeSetPersonNum = (event) => {
+    setParticipants([]);
     if (event.target.value) {
       if (event.target.value.match(/^[1-9][0-9]*/)) {
         setPersonNum(Number(event.target.value));
@@ -53,14 +54,9 @@ export default function SearchCondition(props) {
     }
   };
 
-  const onChangeSetParticipantsId = (event) => {
-    setPersonNum(event.target.value.length);
-    setParticipantsId(event.target.value);
-  };
-
   const onClickSearchShopIsSubmitted = () => {
     let req = {};
-    if (participantsId.length === 0) {
+    if (participants.length === 0) {
       req = {
         areaId: area,
         purposeId: purpose,
@@ -71,10 +67,9 @@ export default function SearchCondition(props) {
         areaId: area,
         purposeId: purpose,
         personNum: personNum,
-        participantsId: participantsId,
+        participantsId: participants,
       };
     }
-    console.log(req);
     fetch(url, {
       method: "POST",
       header: {
@@ -96,82 +91,95 @@ export default function SearchCondition(props) {
 
   return (
     <ThemeProvider theme={theme}>
-      <div className="body">
-        <div>
-          <FormControl sx={{ m: 1, minWidth: 120 }}>
-            <InputLabel id="select-area-label">エリア</InputLabel>
-            <Select
-              labelId="select-area-label"
-              id="select-area"
-              value={area}
-              onChange={onChangeSetArea}
-              label="エリア"
-              sx={{ minWidth: 180 }}
-              className="search"
-            >
-              <MenuItem value={1}>大手町</MenuItem>
-              <MenuItem value={2}>みなとみらい</MenuItem>
-              <MenuItem value={3}>木場</MenuItem>
-            </Select>
-          </FormControl>
-          <FormControl sx={{ m: 1, minWidth: 120 }}>
-            <InputLabel id="select-purpose-label">目的</InputLabel>
-            <Select
-              labelId="select-purpose-label"
-              id="select-purpose"
-              value={purpose}
-              onChange={onChangeSetPurpose}
-              label="目的"
-              sx={{ minWidth: 180 }}
-            >
-              <MenuItem value={1}>歓送迎会</MenuItem>
-              <MenuItem value={2}>忘年会・新年会</MenuItem>
-              <MenuItem value={3}>普段使い</MenuItem>
-            </Select>
-          </FormControl>
-          <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-            <Select
-              labelId="demo-simple-select-standard-label"
-              id="demo-simple-select-standard"
-              value={memberType}
-              onChange={onChangeSetMemberType}
-              label="memberType"
-              sx={{ minWidth: 180, height: 56 }}
-              className="search"
-            >
-              <MenuItem value={1} disabled>
-                参加者の追加
-              </MenuItem>
-              <MenuItem value={2}>参加者を指定</MenuItem>
-              <MenuItem value={3}>参加人数のみ指定</MenuItem>
-            </Select>
-          </FormControl>
-          <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-            {memberType === 2 ? (
-              <p>ここは鈴木さん作のソースを挟む</p>
-            ) : memberType === 3 ? (
-              <TextField
-                id="outlined-basic"
-                label="参加人数"
-                variant="outlined"
-                onChange={onChangeSetPersonNum}
-              />
-            ) : (
-              <p></p>
-            )}
-          </FormControl>
-        </div>
-        <div className="search-button">
-          <Button
-            variant="outlined"
-            size="small"
-            startIcon={<SearchIcon />}
-            onClick={onClickSearchShopIsSubmitted}
-            sx={{ height: "40px" }}
+      <div>
+        <FormControl sx={{ m: 1, minWidth: 120 }}>
+          <InputLabel id="select-area-label">エリア</InputLabel>
+          <Select
+            labelId="select-area-label"
+            id="select-area"
+            value={area}
+            onChange={onChangeSetArea}
+            label="エリア"
+            sx={{ minWidth: 180 }}
           >
-            お店を探す
-          </Button>
-        </div>
+            <MenuItem value={1}>大手町</MenuItem>
+            <MenuItem value={2}>みなとみらい</MenuItem>
+            <MenuItem value={3}>木場</MenuItem>
+          </Select>
+        </FormControl>
+        <FormControl sx={{ m: 1, minWidth: 120 }}>
+          <InputLabel id="select-purpose-label">目的</InputLabel>
+          <Select
+            labelId="select-purpose-label"
+            id="select-purpose"
+            value={purpose}
+            onChange={onChangeSetPurpose}
+            label="目的"
+            sx={{ minWidth: 180 }}
+          >
+            <MenuItem value={1}>歓送迎会</MenuItem>
+            <MenuItem value={2}>忘年会・新年会</MenuItem>
+            <MenuItem value={3}>普段使い</MenuItem>
+          </Select>
+        </FormControl>
+        <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+          <Select
+            labelId="demo-simple-select-standard-label"
+            id="demo-simple-select-standard"
+            value={memberType}
+            onChange={onChangeSetMemberType}
+            label="memberType"
+            sx={{ minWidth: 180, height: 56 }}
+            className="search"
+          >
+            <MenuItem value={1} disabled>
+              参加者の追加
+            </MenuItem>
+            <MenuItem value={2}>参加者を指定</MenuItem>
+            <MenuItem value={3}>参加人数のみ指定</MenuItem>
+          </Select>
+        </FormControl>
+        <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+          {memberType === 2 ? (
+            <>
+              <Button
+                variant="outlined"
+                sx={{ height: 56 }}
+                onClick={() => setShowDialog(true)}
+              >
+                参加者を選択してください
+              </Button>
+              <Participants
+                open={showDialog}
+                onClose={setShowDialog}
+                participants={participants}
+                setParticipants={setParticipants}
+                personNum={personNum}
+                setPersonNum={setPersonNum}
+              />
+            </>
+          ) : memberType === 3 ? (
+            <TextField
+              id="outlined-basic"
+              label="参加人数"
+              variant="outlined"
+              onChange={onChangeSetPersonNum}
+            />
+          ) : (
+            <p></p>
+          )}
+        </FormControl>
+      </div>
+      <div className="search-button">
+        <Button
+          variant="outlined"
+          size="small"
+          startIcon={<SearchIcon />}
+          onClick={onClickSearchShopIsSubmitted}
+          sx={{ height: "40px" }}
+        >
+          お店を探す
+        </Button>
       </div>
     </ThemeProvider>
   );
