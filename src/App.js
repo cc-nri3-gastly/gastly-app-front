@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import './App.css';
-import Button from '@mui/material/Button';
-import Header from './components/header';
-import ApplicationBar from './components/applicationBar';
-import SearchShop from './components/searchShop';
+import React, { useEffect, useState } from "react";
+import "./App.css";
+import Button from "@mui/material/Button";
+import Header from "./components/header";
+import ApplicationBar from "./components/applicationBar";
+import SearchShop from "./components/searchShop";
 
 const App = () => {
-  const url = '/users';
+  const url = "/users";
 
   const [users, setUsers] = useState([]);
 
@@ -16,7 +16,7 @@ const App = () => {
     <>
       <Header />
       <ApplicationBar />
-      <div className='centerContents'>
+      <div className="centerContents">
         <SearchShop />
         {/* <h1>Users</h1>
         {users.map((user, index) => (
