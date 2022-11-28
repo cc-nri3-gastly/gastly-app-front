@@ -12,7 +12,7 @@ import "./search.css";
 import Participants from "./Participants";
 
 export default function SearchCondition(props) {
-  const url = "/shops";
+  const url = "http://18.177.46.139:3001/shops";
   const theme = createTheme({
     palette: {
       primary: {
@@ -67,9 +67,10 @@ export default function SearchCondition(props) {
         areaId: area,
         purposeId: purpose,
         personNum: personNum,
-        participantsId: participants,
+        participantIds: participants,
       };
     }
+    console.log(req);
     fetch(url, {
       method: "POST",
       header: {
