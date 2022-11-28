@@ -61,6 +61,7 @@ export default function SearchCondition(props) {
       personNum: personNum,
       participantsId: participants,
     };
+
     console.log(req);
     fetch(url, {
       method: "POST",
